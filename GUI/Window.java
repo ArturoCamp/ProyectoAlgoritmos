@@ -5,6 +5,7 @@
  */
 package GUI;
 
+import Data.Data;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JDesktopPane;
@@ -17,7 +18,8 @@ import javax.swing.JMenuItem;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import com.csvreader.CsvReader;
 import com.csvreader.CsvWriter;
-        
+import java.io.File;
+import java.io.IOException;
 
 /**
  *
@@ -25,10 +27,14 @@ import com.csvreader.CsvWriter;
  */
 public class Window extends JFrame implements ActionListener {
 
+    public JFileChooser jFileChooser;
+    public File archivoSelec;
     private JDesktopPane jDesktopPane;
     private JMenuBar menuBar;
     private JMenu menu;
     private JMenuItem itemRegistro1, itemRegistro2, itemRegistro3;
+    //setIconImage(new ImageIcon(getClass().getResource("/image/globe.png")).getImage());
+   
 
     public Window() {
 
@@ -66,14 +72,38 @@ public class Window extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == this.itemRegistro1) {
-            JFileChooser chooser = new JFileChooser();
-            FileNameExtensionFilter filter = new FileNameExtensionFilter("csv");
-            chooser.setFileFilter(filter);
-            int returnVal = chooser.showOpenDialog(chooser);
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                System.out.println("You chose to open this file: "
-                        + chooser.getSelectedFile().getName());
+            this.jFileChooser = new JFileChooser();
+           // this.jFileChooser.showOpenDialog(null);
+            FileNameExtensionFilter extensionFilter = new FileNameExtensionFilter("csv", "CSV");
+           this.jFileChooser.setCurrentDirectory(new java.io.File("."));
+//            this.jbtnLoadMovies.setEnabled(true);
+            File file = jFileChooser.getSelectedFile();
+            this.jFileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+            this.jFileChooser.setAcceptAllFileFilterUsed(false);
+
+            if (jFileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                System.out.println("getCurrentDirectory(): " + jFileChooser.getCurrentDirectory());
+                //                   jtxField.setText(jFileChooser.getSelectedFile()+"");
+                String path=jFileChooser.getCurrentDirectory().getName();
+                path="datos.csv";
+                System.err.println(path);
+               Data data=new Data();
+               data.readerArchive(path);
+//                    MovieBusiness movieB=new MovieBusiness();
+//                    movieB.readFile(jtxField.getText());
+            } else {
+                System.out.println("No Selection ");
             }
+//            JFileChooser fileChooser = new JFileChooser();
+//            fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+//
+//            int result = fileChooser.showOpenDialog(this);
+//            if (result == JFileChooser.APPROVE_OPTION) {
+//                File selectedFile = fileChooser.getSelectedFile();
+//                System.out.println("Selected file: " + selectedFile.getAbsolutePath());
+//            }
+//            
+
         }//item1
 
         if (e.getSource() == this.itemRegistro2) {
@@ -84,7 +114,10 @@ public class Window extends JFrame implements ActionListener {
         }//item2
 
         if (e.getSource() == this.itemRegistro3) {
-
+                  MovieList movieList = new MovieList();
+            movieList.setFocusable(true);
+            movieList.setVisible(true);
+            this.jDesktopPane.add( movieList);
         }//item3
     }
 
